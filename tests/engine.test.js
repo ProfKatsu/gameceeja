@@ -1,0 +1,13 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {simulate,validRun,makeRecord,validRecord,initialStats} from '../src/engine.js';
+import {characters,scenes} from '../src/story.js';
+const base=()=>({version:1,id:'test-123',name:'Professor',group:'ATPC',character:'ana',plan:['study','rest','study','network','rest','study'],choices:[],supports:[]});
+test('planejamento equilibra indicadores conhecidos',()=>assert.deepEqual(initialStats(base().plan),{energy:72,progress:20,network:30}));
+test('partida apoiada pode concluir com indicadores válidos',()=>{const r={...base(),choices:Array(12).fill(0),supports:[4,8]};const s=simulate(r);assert.equal(s.history.length,12);assert.equal(s.complete,true);assert(s.score<=155);assert(validRecord(makeRecord(r)));});
+test('sobrecarga altera o rendimento e não impede terminar o roteiro',()=>{const r={...base(),plan:Array(6).fill('study'),choices:[1,2,1,2,2,1,1,2,2,1,1,0]};const s=simulate(r);assert(s.history.some(h=>h.fatigue));assert.equal(s.history.length,12);assert.equal(s.history[2].after.progress-s.history[2].before.progress,4);assert.equal(s.balanced,false);});
+test('apoio é aplicado no momento escolhido e recupera fôlego',()=>{const a={...base(),choices:[0,0,0]};const b={...a,supports:[2]};assert.equal(simulate(b).energy-simulate(a).energy,10);assert.equal(simulate(b).network-simulate(a).network,8);});
+test('registro exige todas as decisões; backup preserva acentos',()=>{assert.throws(()=>makeRecord(base()));const r={...base(),name:'Célia',choices:Array(12).fill(0)};const rec=makeRecord(r);assert(validRecord(JSON.parse(JSON.stringify(rec))));assert.equal(rec.name,'Célia');});
+test('dados corrompidos ou malformados são rejeitados',()=>{for(const value of [null,{}, {...base(),choices:[3]},{...base(),supports:[1,1]},{...base(),supports:[1,2,3]},{...base(),character:'intruso'},{...base(),plan:['study']}])assert.equal(validRun(value),false);assert.equal(validRecord({version:1,score:999}),false);});
+test('milhares de trajetórias mantêm limites e todas chegam a um desfecho',()=>{let state=71;const next=()=>{state=(state*16807)%2147483647;return state;};let endings=new Set();for(let i=0;i<2400;i++){const r={...base(),character:characters[i%3].id,plan:Array.from({length:6},()=>['study','rest','network'][next()%3]),choices:scenes.map(()=>next()%3),supports:i%2?[2,8]:[]};const s=simulate(r);for(const k of ['energy','progress','network'])assert(s[k]>=0&&s[k]<=100);assert(s.score>=0&&s.score<=155);assert.equal(s.history.length,12);assert(validRecord(makeRecord(r)));endings.add(s.complete);}assert.equal(endings.size,2);});
+
