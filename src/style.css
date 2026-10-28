@@ -8,3 +8,26 @@
 
 .personal-detail{font-size:12px;line-height:1.8;color:#6b7966;border-left:2px solid #c1cbb5;padding-left:16px;margin-bottom:22px}.memory-echo{background:#e9ecdf;padding:13px 16px;font-size:11px;line-height:1.8;color:#5b7158}.memory-echo span{display:block;font-size:8px;letter-spacing:1.4px;margin-bottom:5px}
 .table-wrap{position:relative}.brand{white-space:nowrap}@media(max-width:380px){.topbar{padding:0 14px}.topbar nav{gap:9px}.brand{font-size:18px}.brand-mark{font-size:25px}.sound{padding-left:9px}}
+
+/* Orientação da etapa Sua semana possível. */
+.planner-label{flex-wrap:wrap;gap:8px 20px}
+.planner-guidance{max-width:900px;margin-bottom:24px}
+.planner-guidance h2{font-size:26px;line-height:1.25;margin-bottom:12px}
+.planner-guidance p{font-size:14px;line-height:1.75;color:var(--ink);margin-bottom:12px}
+.planner-guidance p:last-child{margin-bottom:0}
+.planner .plan-slot{min-width:0}
+.planner .plan-slot select{width:100%;min-height:44px}
+@media(max-width:620px){
+  .planner-guidance h2{font-size:24px}
+  .planner .plan-slot>span{font-size:9px;letter-spacing:.7px;line-height:1.6}
+}
+
+/* Crédito de autoria e perfis. */
+footer{flex-wrap:wrap;gap:16px 24px}
+footer>span:nth-child(2){letter-spacing:0;font-size:11px}
+.author-credit{flex-basis:100%;min-width:0;border-top:1px solid var(--line);padding-top:18px;letter-spacing:0;font-size:12px;text-align:center}
+.author-credit p{margin:0;line-height:1.8}
+.author-credit p+p{margin-top:5px}
+.author-credit strong{font-weight:600;color:var(--ink)}
+.author-credit a{position:relative;display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+@media(max-width:620px){footer>span:nth-child(2){font-size:9px;max-width:130px}.author-credit{font-size:12px}}
